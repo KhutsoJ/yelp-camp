@@ -11,7 +11,7 @@ mongoose.connect('mongodb://127.0.0.1:27017/yelpCamp')
       console.log("Database connected");
    })
    .catch(err => {
-      console.log("ERROR:"  + err.message);
+      console.log("ERROR:" + err.message);
    })
 
 app.set('view engine', 'ejs');
@@ -23,16 +23,13 @@ app.listen(3000, () => {
 
 
 
+
+//CRUD FUNCTIONALITY
 app.get('/', (req, res) => {
    res.render('home')
 })
 
-app.get('/Campground/make', async (req, res) => {
-   const camp = new Campground({
-      name: 'Yard Camp', 
-      price: '$ 900', 
-      location: 'My Backyard'
-   });
-   await camp.save();
-   res.send(camp);
+app.get('/campgrounds', async (req, res) => {
+   const campgrounds = await Campground.find();
+   res.render('campgrounds/index', { campgrounds });
 })
