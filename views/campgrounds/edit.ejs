@@ -3,7 +3,7 @@
 <head>
    <meta charset="UTF-8">
    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-   <title>CREATE CAMPGROUND</title>
+   <title>Edit CAMPGROUND</title>
    <style>
       * {
          font-family: 'Arial';
@@ -11,8 +11,8 @@
    </style>
 </head>
 <body>
-   <h1>Create Campground</h1>
-   <form action="/campgrounds", method="POST">
+   <h1>Edit Campground</h1>
+   <form action="/campgrounds/<%= campground._id %>?_method=PUT", method="POST">
       <div 
          class="container" 
          style="
@@ -21,10 +21,10 @@
          grid-gap: 5px;">
 
          <label for="name">Campground Name</label>
-         <input type="text" id="name" name="campground[name]">
+         <input type="text" id="name" name="campground[name]" value="<%= campground.name %>">
          <label for="location">Location</label>
-         <input type="text" id="location" name="campground[location]">
-         <button style="grid-column: span 2; cursor: pointer">Add Campgrounds</button>
+         <input type="text" id="location" name="campground[location]" value="<%= campground.location %>">
+         <button style="grid-column: span 2; cursor: pointer">Update Campground</button>
       </div>
    </form>
    <footer>
