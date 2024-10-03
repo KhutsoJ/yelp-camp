@@ -4,12 +4,22 @@
    <meta charset="UTF-8">
    <meta name="viewport" content="width=device-width, initial-scale=1.0">
    <title>CAMPGROUNDS</title>
+   <style>
+      body {
+         font-family: "Arial";
+      }
+   </style>
 </head>
 <body>
    <h1>ALL CAMPGROUNDS</h1>
+   <div>
+      <a href="/campgrounds/create">Add Campground</a>
+   </div>
    <ul>
       <% for (let c of campgrounds) { %>
-         <li> <%= c.name %> </li>
+         <li> 
+            <a href="campgrounds/<%= c.id %>"><%= c.name %></a> 
+         </li>
       <% } %>
    </ul>
 </body>

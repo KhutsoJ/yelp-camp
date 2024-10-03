@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>CREATE CAMPGROUND</title>
+   <style>
+      * {
+         font-family: 'Arial';
+      }
+   </style>
+</head>
+<body>
+   <h1>Create Campground</h1>
+   <form action="/campgrounds/:id", method="POST">
+      <div 
+         class="container" 
+         style="
+         display: grid;
+         grid-template-columns: 200px 200px;
+         grid-gap: 5px;">
+
+         <label for="name">Campground Name</label>
+         <input type="text" id="name" name="campground[name]">
+         <label for="location">Location</label>
+         <input type="text" id="location" name="campground[location]">
+         <button style="grid-column: span 2; cursor: pointer">Add Campgrounds</button>
+      </div>
+   </form>
+   <a href="/campgrounds">Cancel</a>
+</body>
+</html>
