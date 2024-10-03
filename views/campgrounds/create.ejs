@@ -1,16 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-   <meta charset="UTF-8">
-   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-   <title>CREATE CAMPGROUND</title>
-   <style>
-      * {
-         font-family: 'Arial';
-      }
-   </style>
-</head>
-<body>
+<% layout('layouts/boilerplate') %>
    <h1>Create Campground</h1>
    <form action="/campgrounds", method="POST">
       <div 
@@ -30,5 +18,3 @@
    <footer>
       <a href="/campgrounds">Cancel</a>
    </footer>
-</body>
-</html>
