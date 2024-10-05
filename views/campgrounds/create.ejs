@@ -1,20 +1,58 @@
 <% layout('layouts/boilerplate') %>
-   <h1>Create Campground</h1>
-   <form action="/campgrounds", method="POST">
-      <div 
-         class="container" 
-         style="
-         display: grid;
-         grid-template-columns: 200px 200px;
-         grid-gap: 5px;">
-
-         <label for="name">Campground Name</label>
-         <input type="text" id="name" name="campground[name]">
-         <label for="location">Location</label>
-         <input type="text" id="location" name="campground[location]">
-         <button style="grid-column: span 2; cursor: pointer">Add Campgrounds</button>
+   <div class="row">
+      <h1 class="text-center">New Campground</h1>
+      <div class="col-6 offset-3">
+         <form action="/campgrounds" method="POST" novalidate class="validated-form">
+            <div class="mb-3">
+               <label class="form-label" for="name">Campground Name</label>
+               <input class="form-control" type="text" id="name" name="campground[name]" required>
+            </div>
+            <div class="mb-3">
+               <label class="form-label" for="location">Location</label>
+               <input class="form-control" type="text" id="location" name="campground[location]" required>
+            </div>
+            <div class="mb-3">
+               <label class="form-label" for="image">Image URL</label>
+               <input class="form-control" type="text" id="image" name="campground[image]" required>
+            </div>
+            <div>
+               <label class="form-label" for="price">Campground Price</label>
+               <div class="input-group mb-3">
+                  <span class="input-group-text" id="price-label">$</span>
+                  <input type="text" class="form-control" id="price-label" name="campground[price]" placeholder="0.00"
+                     aria-label="price-label" aria-describedby="price-label" required>
+               </div>
+            </div>
+            <div class="mb-3">
+               <label class="form-label" for="description">Description</label>
+               <textarea class="form-control" type="text" id="description" name="campground[description]"
+                  required></textarea>
+            </div>
+            <div>
+               <button class="btn btn-success mb-3">Add Campgrounds</button>
+            </div>
+         </form>
+         <a href="/campgrounds">All Campgrounds</a>
       </div>
-   </form>
-   <footer>
-      <a href="/campgrounds">Cancel</a>
-   </footer>
+   </div>
+
+   <script>
+      (() => {
+         'use strict'
+
+         // Fetch all the forms we want to apply custom Bootstrap validation styles to
+         const forms = document.querySelectorAll('.validated-form')
+
+         // Loop over them and prevent submission
+         Array.from(forms).forEach(form => {
+            form.addEventListener('submit', event => {
+               if (!form.checkValidity()) {
+                  event.preventDefault()
+                  event.stopPropagation()
+               }
+
+               form.classList.add('was-validated')
+            }, false)
+         })
+      })()
+   </script>

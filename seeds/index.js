@@ -2,6 +2,11 @@
 // USEFUL TO JUST POPULATE DATABASE WITH DATA
 
 
+//GET RANDOM IMAGES:
+   //https://api.unsplash.com/photos/random?client_id=IB-pf-kAqn_b4WVQmlgcAYPTkWLvHrOEmldEcW3wqMs&query=in-the-woods
+//KEY:
+   //IB-pf-kAqn_b4WVQmlgcAYPTkWLvHrOEmldEcW3wqMs
+
 const mongoose = require('mongoose');
 const Campground = require('../models/campground');
 const cities = require('./cities');
@@ -36,13 +41,18 @@ const seedDB = async () => {
       //CREATE CAMPGROUND AND SAVE DATABASE
       const campground = new Campground({
          name: name,
-         location: locationName
+         location: locationName,
+         price: Math.floor(Math.random() * 30) + 10,
+         description: 'Lorem ipsum dolor sit amet consectetur, adipisicing elit. Neque eius praesentium vero nulla doloribus eum nisi accusantium expedita dignissimos aliquam corrupti, amet, ipsum fugiat blanditiis repudiandae illum dolore animi magni!',
+         image: `https://api.unsplash.com/photos/random?client_id=IB-pf-kAqn_b4WVQmlgcAYPTkWLvHrOEmldEcW3wqMs&query=in-the-woods`
+         
       });
       await campground.save();
    }
 }
 
 seedDB().then(() => {
+   console.log("Database seeded");
    mongoose.connection.close().then(() => console.log("Database closed"))
 })
 
