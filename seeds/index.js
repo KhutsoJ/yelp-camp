@@ -3,7 +3,7 @@
 
 
 //GET RANDOM IMAGES:
-   //https://api.unsplash.com/photos/random?client_id=IB-pf-kAqn_b4WVQmlgcAYPTkWLvHrOEmldEcW3wqMs&query=in-the-woods
+   //https://api.unsplash.com/photos/random?client_id=IB-pf-kAqn_b4WVQmlgcAYPTkWLvHrOEmldEcW3wqMs&query=in-the-woods&count=1
 //KEY:
    //IB-pf-kAqn_b4WVQmlgcAYPTkWLvHrOEmldEcW3wqMs
 
@@ -11,6 +11,7 @@ const mongoose = require('mongoose');
 const Campground = require('../models/campground');
 const cities = require('./cities');
 const seedHelper = require('./seedHelper');
+const axios = require('axios');
 
 mongoose.connect('mongodb://127.0.0.1:27017/yelpCamp')
    .then(() => {
@@ -27,7 +28,7 @@ const seedDB = async () => {
    const descriptorsList = seedHelper.descriptors;
    const citiesList = cities;
 
-   for (let i = 0; i < 50; i++) {
+   for (let i = 0; i < 20; i++) {
       //CREATE A RANDOM NAME
       const place = sample(placesList);
       const descriptor = sample(descriptorsList);
@@ -37,15 +38,16 @@ const seedDB = async () => {
       const city = location.city;
       const state = location.state;
       const locationName = `${city}, ${state}`;
-
+      //RANDOM IMAGE
+      const imageData = await axios.get('https://api.unsplash.com/photos/random?client_id=IB-pf-kAqn_b4WVQmlgcAYPTkWLvHrOEmldEcW3wqMs&query=in-the-woods&count=1&orientation=squarish');
+      const image = imageData.data[0].urls.regular;
       //CREATE CAMPGROUND AND SAVE DATABASE
       const campground = new Campground({
          name: name,
          location: locationName,
          price: Math.floor(Math.random() * 30) + 10,
          description: 'Lorem ipsum dolor sit amet consectetur, adipisicing elit. Neque eius praesentium vero nulla doloribus eum nisi accusantium expedita dignissimos aliquam corrupti, amet, ipsum fugiat blanditiis repudiandae illum dolore animi magni!',
-         image: `https://api.unsplash.com/photos/random?client_id=IB-pf-kAqn_b4WVQmlgcAYPTkWLvHrOEmldEcW3wqMs&query=in-the-woods`
-         
+         image: image
       });
       await campground.save();
    }

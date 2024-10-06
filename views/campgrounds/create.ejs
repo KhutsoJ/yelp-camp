@@ -1,26 +1,39 @@
 <% layout('layouts/boilerplate') %>
-   <div class="row">
+   <div class="row mb-5">
       <h1 class="text-center">New Campground</h1>
       <div class="col-6 offset-3">
          <form action="/campgrounds" method="POST" novalidate class="validated-form">
             <div class="mb-3">
                <label class="form-label" for="name">Campground Name</label>
                <input class="form-control" type="text" id="name" name="campground[name]" required>
+               <div class="valid-feedback">
+                  Looks good!
+               </div>
             </div>
             <div class="mb-3">
                <label class="form-label" for="location">Location</label>
                <input class="form-control" type="text" id="location" name="campground[location]" required>
+               <div class="valid-feedback">
+                  Looks good!
+               </div>
             </div>
             <div class="mb-3">
                <label class="form-label" for="image">Image URL</label>
                <input class="form-control" type="text" id="image" name="campground[image]" required>
+               <div class="valid-feedback">
+                  Looks good!
+               </div>
             </div>
             <div>
                <label class="form-label" for="price">Campground Price</label>
                <div class="input-group mb-3">
                   <span class="input-group-text" id="price-label">$</span>
                   <input type="text" class="form-control" id="price-label" name="campground[price]" placeholder="0.00"
-                     aria-label="price-label" aria-describedby="price-label" required>
+                     aria-label="price-label" aria-describedby="price-label" required
+                  >
+                  <div class="valid-feedback">
+                     Looks good!
+                  </div>
                </div>
             </div>
             <div class="mb-3">
@@ -29,30 +42,11 @@
                   required></textarea>
             </div>
             <div>
-               <button class="btn btn-success mb-3">Add Campgrounds</button>
+               <button class="btn btn-success mb-3">Add Campground</button>
             </div>
          </form>
          <a href="/campgrounds">All Campgrounds</a>
       </div>
    </div>
 
-   <script>
-      (() => {
-         'use strict'
-
-         // Fetch all the forms we want to apply custom Bootstrap validation styles to
-         const forms = document.querySelectorAll('.validated-form')
-
-         // Loop over them and prevent submission
-         Array.from(forms).forEach(form => {
-            form.addEventListener('submit', event => {
-               if (!form.checkValidity()) {
-                  event.preventDefault()
-                  event.stopPropagation()
-               }
-
-               form.classList.add('was-validated')
-            }, false)
-         })
-      })()
-   </script>
+   
