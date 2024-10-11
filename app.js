@@ -5,6 +5,9 @@ const path = require('path');
 const ejsMateEngine = require('ejs-mate');
 const methodOverride = require('method-override');
 const app = express();
+const session = require('express-session');
+const flash = require('connect-flash');
+
 
 const ExpressError = require('./utils/ExpressError');
 const campgroundRoutes = require('./routes/campgrounds');
@@ -16,6 +19,19 @@ app.set('views', path.join(__dirname, 'views'));
 app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride('_method'));
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(flash());
+
+const sessionConfig = {
+   secret: 'thisshouldbeanactualsecret',
+   resave: false,
+   saveUninitialized: true,
+   cookie: {
+      httpOnly: true,
+      expires: Date.now() + 1000 * 60 * 60 * 24 * 7,
+      maxAge: 1000 * 60 * 60 * 24 * 7
+   }
+}
+app.use(session(sessionConfig));
 
 mongoose.connect('mongodb://127.0.0.1:27017/yelpCamp')
    .then(() => {
@@ -32,7 +48,11 @@ app.listen(3000, () => {
 })
 
 
-
+app.use((req, res, next) => {
+   res.locals.success = req.flash('success');
+   res.locals.error = req.flash('error');
+   next();
+})
 
 
 //CRUD FUNCTIONALITY
@@ -42,7 +62,6 @@ app.get('/', (req, res) => {
 
 //CAMPGROUND ROUTES//
 app.use('/campgrounds', campgroundRoutes);
-
 
 //REVIEW ROUTES//
 app.use('/campgrounds/:id/reviews', reviewRoutes);
