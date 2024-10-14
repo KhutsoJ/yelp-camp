@@ -6,6 +6,7 @@ const wrapAsync = require('../utils/wrapAsync');
 const { reviewSchema } = require('../schemas');
 const Campground = require('../models/campground');
 const Review = require('../models/review');
+const { isLoggedIn } = require('../middleware');
 
 
 
@@ -21,7 +22,7 @@ const validateReview = (req, res, next) => {
 }
 
 //POST REVIEW
-router.post('/', validateReview, wrapAsync(async (req, res) => {
+router.post('/', isLoggedIn, validateReview, wrapAsync(async (req, res) => {
    const campground = await Campground.findById(req.params.id);
    const review = new Review(req.body.review);
    campground.reviews.push(review);
@@ -32,7 +33,7 @@ router.post('/', validateReview, wrapAsync(async (req, res) => {
 }))
 
 //DELETE REVIEW
-router.delete('/:reviewId', wrapAsync(async (req, res) => {
+router.delete('/:reviewId', isLoggedIn, wrapAsync(async (req, res) => {
    const { id, reviewId } = req.params;
    await Campground.findByIdAndUpdate(id, { $pull: { reviews: reviewId } });
    await Review.findByIdAndDelete(reviewId);
