@@ -43,6 +43,7 @@ const seedDB = async () => {
       const image = imageData.data[0].urls.regular;
       //CREATE CAMPGROUND AND SAVE DATABASE
       const campground = new Campground({
+         author: '670abccecac6adfc4dfc8bba',
          name: name,
          location: locationName,
          price: Math.floor(Math.random() * 30) + 10,
@@ -51,6 +52,7 @@ const seedDB = async () => {
       });
       await campground.save();
    }
+   console.log('seeding done');
 }
 
 seedDB().then(() => {
