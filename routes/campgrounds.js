@@ -20,7 +20,7 @@ router.route('/')
 
 router.route('/:id')
    .get(wrapAsync(campgrounds.showDetails)) //GET CAMPGROUND DETAILS
-   .put(isLoggedIn, isAuthor, validateCampground, wrapAsync(campgrounds.updateDetails)) //UPDATE THE CAMPGROUND
+   .put(isLoggedIn, isAuthor, upload.array('image'), validateCampground, wrapAsync(campgrounds.updateDetails)) //UPDATE THE CAMPGROUND
    .delete(isLoggedIn, isAuthor, wrapAsync(campgrounds.deleteCampground)); //DELETE A CAMPGROUND
 
 //GET CAMPGROUND EDIT FORM

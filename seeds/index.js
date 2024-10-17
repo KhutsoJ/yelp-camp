@@ -28,7 +28,7 @@ const seedDB = async () => {
    const descriptorsList = seedHelper.descriptors;
    const citiesList = cities;
 
-   for (let i = 0; i < 20; i++) {
+   for (let i = 0; i < 10; i++) {
       //CREATE A RANDOM NAME
       const place = sample(placesList);
       const descriptor = sample(descriptorsList);
@@ -39,8 +39,12 @@ const seedDB = async () => {
       const state = location.state;
       const locationName = `${city}, ${state}`;
       //RANDOM IMAGE
-      const imageData = await axios.get('https://api.unsplash.com/photos/random?client_id=IB-pf-kAqn_b4WVQmlgcAYPTkWLvHrOEmldEcW3wqMs&query=in-the-woods&count=1&orientation=squarish');
-      const image = imageData.data[0].urls.regular;
+      const imageData = await axios.get('https://api.unsplash.com/photos/random?client_id=IB-pf-kAqn_b4WVQmlgcAYPTkWLvHrOEmldEcW3wqMs&query=in-the-woods&count=2&orientation=squarish');
+      let images = [];
+      for (d of imageData.data) {
+         images.push({url: d.urls.regular, filename: d.user.id});
+      }
+      console.log(images);
       //CREATE CAMPGROUND AND SAVE DATABASE
       const campground = new Campground({
          author: '670abccecac6adfc4dfc8bba',
@@ -48,11 +52,10 @@ const seedDB = async () => {
          location: locationName,
          price: Math.floor(Math.random() * 30) + 10,
          description: 'Lorem ipsum dolor sit amet consectetur, adipisicing elit. Neque eius praesentium vero nulla doloribus eum nisi accusantium expedita dignissimos aliquam corrupti, amet, ipsum fugiat blanditiis repudiandae illum dolore animi magni!',
-         image: image
+         images: images
       });
       await campground.save();
    }
-   console.log('seeding done');
 }
 
 seedDB().then(() => {
