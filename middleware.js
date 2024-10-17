@@ -15,7 +15,6 @@ module.exports.isLoggedIn = (req, res, next) => {
 }
 
 module.exports.storeReturnTo = (req, res, next) => {
-   console.log(req.session.returnTo);
    if (req.session.returnTo) {
       res.locals.returnTo = req.session.returnTo;
    }

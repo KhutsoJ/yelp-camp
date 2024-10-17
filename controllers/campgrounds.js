@@ -12,21 +12,23 @@ module.exports.getCreateForm = (req, res) => {
 
 module.exports.createCampground = async (req, res, next) => {
    const campground = new Campground(req.body.campground);
+   campground.images = req.files.map(f => ({ url: f.path, filename: f.filename }));
    campground.author = req.user._id;
    await campground.save();
+   console.log(campground);
    req.flash('success', 'Successfully made a new Campground!');
    res.redirect(`/campgrounds/${campground._id}`);
 }
 
 module.exports.showDetails = async (req, res) => {
    const campground = await Campground.findById(req.params.id)
-   .populate({
-      path: 'reviews',
-      populate: {
-         path: 'author'
-      }
-   })
-   .populate('author');
+      .populate({
+         path: 'reviews',
+         populate: {
+            path: 'author'
+         }
+      })
+      .populate('author');
    if (!campground) {
       req.flash('error', 'Campground not found');
       return res.redirect('/campgrounds');

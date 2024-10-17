@@ -4,7 +4,9 @@ const router = express.Router();
 const wrapAsync = require('../utils/wrapAsync');
 const { validateCampground, isAuthor, isLoggedIn } = require('../middleware');
 const campgrounds = require('../controllers/campgrounds');
-
+const multer = require('multer');
+const { storage } = require('../cloudinary');
+const upload = multer({ storage });
 
 
 
@@ -13,7 +15,8 @@ router.get('/create', isLoggedIn, campgrounds.getCreateForm);
 
 router.route('/')
    .get(wrapAsync(campgrounds.index)) //GET ALL CAMPGROUNDS
-   .post(isLoggedIn, validateCampground, wrapAsync(campgrounds.createCampground)); //POST NEW CAMPGROUND
+   .post(isLoggedIn, upload.array('image'), validateCampground, wrapAsync(campgrounds.createCampground)); //POST NEW CAMPGROUND
+   
 
 router.route('/:id')
    .get(wrapAsync(campgrounds.showDetails)) //GET CAMPGROUND DETAILS
