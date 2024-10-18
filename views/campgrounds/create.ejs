@@ -17,14 +17,16 @@
                   Looks good!
                </div>
             </div>
-            <input type="file" name="image" id="image" multiple>
+            <div class="mb-3">
+               <label for="image" class="form-label">Add Images</label>
+               <input class="form-control" type="file" name="image" id="image" multiple>
+             </div>
             <div>
                <label class="form-label" for="price">Campground Price</label>
                <div class="input-group mb-3">
                   <span class="input-group-text" id="price-label">$</span>
                   <input type="text" class="form-control" id="price-label" name="campground[price]" placeholder="0.00"
-                     aria-label="price-label" aria-describedby="price-label" required
-                  >
+                     aria-label="price-label" aria-describedby="price-label" required>
                   <div class="valid-feedback">
                      Looks good!
                   </div>
