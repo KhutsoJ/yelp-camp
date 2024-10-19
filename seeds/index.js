@@ -12,6 +12,11 @@ const Campground = require('../models/campground');
 const cities = require('./cities');
 const seedHelper = require('./seedHelper');
 const axios = require('axios');
+const maptilerClient = require('@maptiler/client');
+if (process.env.NODE_ENV !== "production") {
+   require('dotenv').config();
+}
+maptilerClient.config.apiKey = process.env.MAPTILER_API_KEY;
 
 mongoose.connect('mongodb://127.0.0.1:27017/yelpCamp')
    .then(() => {
@@ -29,7 +34,7 @@ const seedDB = async () => {
    const citiesList = cities;
 
    for (let i = 0; i < 10; i++) {
-      //CREATE A RANDOM NAME
+      //CREATE A RANDOM CAMP NAME
       const place = sample(placesList);
       const descriptor = sample(descriptorsList);
       const name = `${descriptor} ${place}`;
@@ -44,11 +49,16 @@ const seedDB = async () => {
       for (d of imageData.data) {
          images.push({url: d.urls.regular, filename: d.user.id});
       }
-      console.log(images);
+      //GET GEO DATA OF LOCATION
+      const geoData = await maptilerClient.geocoding.forward(
+         locationName,
+         {limit: 1}
+      )
       //CREATE CAMPGROUND AND SAVE DATABASE
       const campground = new Campground({
          author: '670abccecac6adfc4dfc8bba',
          name: name,
+         geometry: geoData.features[0].geometry,
          location: locationName,
          price: Math.floor(Math.random() * 30) + 10,
          description: 'Lorem ipsum dolor sit amet consectetur, adipisicing elit. Neque eius praesentium vero nulla doloribus eum nisi accusantium expedita dignissimos aliquam corrupti, amet, ipsum fugiat blanditiis repudiandae illum dolore animi magni!',
@@ -60,7 +70,7 @@ const seedDB = async () => {
 
 seedDB().then(() => {
    console.log("Database seeded");
-   mongoose.connection.close().then(() => console.log("Database closed"))
+   mongoose.connection.close().then(() => console.log("Database closed"));
 })
 
 //RETURN RANDOM ELEMENT/SAMPLE IN ARRAY (name, city, etc)

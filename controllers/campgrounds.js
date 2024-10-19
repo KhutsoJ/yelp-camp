@@ -1,6 +1,10 @@
 const Campground = require('../models/campground');
 const { cloudinary } = require('../cloudinary');
 
+const maptilerClient = require('@maptiler/client');
+maptilerClient.config.apiKey = process.env.MAPTILER_API_KEY;
+
+
 module.exports.index = async (req, res) => {
    const campgrounds = await Campground.find();
    res.render('campgrounds/index', { campgrounds });
@@ -11,10 +15,17 @@ module.exports.getCreateForm = (req, res) => {
 }
 
 module.exports.createCampground = async (req, res, next) => {
+   const geoData = await maptilerClient.geocoding.forward(
+      req.body.campground.location,
+      { limit: 1 }
+   )
    const campground = new Campground(req.body.campground);
+   campground.geometry = geoData.features[0].geometry;
+   console.log(campground.geometry.coordinates);
    campground.images = req.files.map(f => ({ url: f.path, filename: f.filename }));
    campground.author = req.user._id;
    await campground.save();
+
    req.flash('success', 'Successfully made a new Campground!');
    res.redirect(`/campgrounds/${campground._id}`);
 }
@@ -47,17 +58,22 @@ module.exports.getEditForm = async (req, res) => {
 
 module.exports.updateDetails = async (req, res) => {
    const { id } = req.params;
-   console.log(req.body);
-   const campground = await Campground.findByIdAndUpdate(id, { ...req.body.campground }, { new: true });
+   const geoData = await maptilerClient.geocoding.forward(
+      req.body.campground.location,
+      { limit: 1 }
+   )
    const imgs = req.files.map(f => ({ url: f.path, filename: f.filename }))
+
+   const campground = await Campground.findByIdAndUpdate(id, { ...req.body.campground }, { new: true });
+   campground.geometry = geoData.features[0].geometry;
    campground.images.push(...imgs);
    await campground.save();
+
    if (req.body.deleteImages) {
       for (let filename of req.body.deleteImages) {
          await cloudinary.uploader.destroy(filename);
       }
       await campground.updateOne({ $pull: { images: { filename: { $in: req.body.deleteImages } } } });
-      console.log(campground);
    }
    req.flash('success', 'Successfully updated the Campground');
    res.redirect(`/campgrounds/${id}`);
