@@ -30,7 +30,7 @@ const seedDB = async () => {
    const descriptors = seedHelper.descriptors;
    const citiesList = cities;
 
-   for (let i = 0; i < 10; i++) {
+   for (let i = 0; i < 50; i++) {
       //CREATE A RANDOM CAMP NAME
       const place = sample(places).sample;
       const descriptor = sample(descriptors).sample;

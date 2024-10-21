@@ -5,13 +5,15 @@ const Review = require('./review');
 
 const ImageSchema = new Schema({
    url: String,
-   filename: String 
+   filename: String
 })
 
 //new virtual function call 'thumbnail'
 ImageSchema.virtual('thumbnail').get(function () {
    return this.url.replace('/upload', '/upload/w_100');
 })
+
+const options = { toJSON: { virtuals: true } };
 
 const CampgroundSchema = new Schema({
    name: String,
@@ -31,13 +33,17 @@ const CampgroundSchema = new Schema({
    },
    images: [ImageSchema],
    reviews: [{
-      type: Schema.Types.ObjectId, 
+      type: Schema.Types.ObjectId,
       ref: 'Review'
    }],
    author: {
       type: Schema.Types.ObjectId,
       ref: 'User'
    }
+}, options)
+
+CampgroundSchema.virtual('properties.popUpMarkup').get(function () {
+   return `<a href="/campgrounds/${this._id}">${this.name}</a>`;
 })
 
 CampgroundSchema.post('findOneAndDelete', async function (doc) {
