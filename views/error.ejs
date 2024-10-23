@@ -3,9 +3,9 @@
       <div class="col-8 offset-3 px-2">
          <div class="alert alert-danger" role="alert">
             <h4 class="alert-heading"><%= err.message %></h4>
-            <p style="overflow-wrap:break-word">
-               <%= err.stack %>
-            </p>
+               <% if (process.env.NODE_ENV !== "production") { %>
+                  <p style="overflow-wrap:break-word"><%= err.stack %></p>
+               <% } %>
          </div>
       </div>
    </div>

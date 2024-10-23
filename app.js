@@ -12,6 +12,9 @@ const session = require('express-session');
 const flash = require('connect-flash');
 const passport = require('passport');
 const LocalStrategy = require('passport-local');
+const mongoSanitize = require('express-mongo-sanitize');
+const helmet = require('helmet');
+const MongoStore = require('connect-mongo');
 
 const ExpressError = require('./utils/ExpressError');
 const campgroundRoutes = require('./routes/campgrounds');
@@ -25,19 +28,38 @@ app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride('_method'));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(flash());
+app.use(mongoSanitize());
+app.use(helmet());
 const User = require('./models/user');
+const dbUrl = 'mongodb://127.0.0.1:27017/yelpCamp';
 
+const store = MongoStore.create({
+   mongoUrl: dbUrl,
+   //DONT CONTINUOUSLY UPDATE IF DATA HAS NOT CHANGED (24H)
+   touchAfter: 24 * 60 * 60,
+   crypto: {
+      secret: 'thisshouldbeanactualsecret'
+   }
+})
+
+store.on("error",function(e) {
+   console.log("SESSION STORE ERROR.", e);
+} )
 
 const sessionConfig = {
+   store: store,
+   name: 'session',
    secret: 'thisshouldbeanactualsecret',
    resave: false,
    saveUninitialized: true,
    cookie: {
       httpOnly: true,
+      // secure: true,
       expires: Date.now() + 1000 * 60 * 60 * 24 * 7,
       maxAge: 1000 * 60 * 60 * 24 * 7
    }
 }
+
 app.use(session(sessionConfig));
 app.use(passport.initialize());
 app.use(passport.session());
@@ -45,7 +67,7 @@ passport.use(new LocalStrategy(User.authenticate()));
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
-mongoose.connect('mongodb://127.0.0.1:27017/yelpCamp')
+mongoose.connect(dbUrl)
    .then(() => {
       console.log("Database connected");
    })
@@ -53,6 +75,45 @@ mongoose.connect('mongodb://127.0.0.1:27017/yelpCamp')
       console.log("ERROR:" + err.message);
    })
 
+const scriptSrcUrls = [
+   "https://stackpath.bootstrapcdn.com/",
+   "https://kit.fontawesome.com/",
+   "https://cdnjs.cloudflare.com/",
+   "https://cdn.jsdelivr.net",
+   "https://cdn.maptiler.com/",
+];
+const styleSrcUrls = [
+   "https://kit-free.fontawesome.com/",
+   "https://stackpath.bootstrapcdn.com/",
+   "https://fonts.googleapis.com/",
+   "https://use.fontawesome.com/",
+   "https://cdn.jsdelivr.net",
+   "https://cdn.maptiler.com/",
+];
+const connectSrcUrls = [
+   "https://api.maptiler.com/",
+];
+const fontSrcUrls = [];
+app.use(
+   helmet.contentSecurityPolicy({
+      directives: {
+         defaultSrc: [],
+         connectSrc: ["'self'", ...connectSrcUrls],
+         scriptSrc: ["'unsafe-inline'", "'self'", ...scriptSrcUrls],
+         styleSrc: ["'self'", "'unsafe-inline'", ...styleSrcUrls],
+         workerSrc: ["'self'", "blob:"],
+         objectSrc: [],
+         imgSrc: [
+            "'self'",
+            "blob",
+            "data",
+            "https://res.cloudinary.com/dzwnndfye/",
+            "https://images.unsplash.com/",
+         ],
+         fontSrc: ["'self'", ...fontSrcUrls],
+      },
+   })
+)
 
 
 app.listen(3000, () => {
@@ -68,7 +129,7 @@ app.use((req, res, next) => {
 })
 
 app.get('/fakeUser', async (req, res) => {
-   const user = new User({email: 'joy@gmail.com', username: 'khutsojoy'});
+   const user = new User({ email: 'joy@gmail.com', username: 'khutsojoy' });
    const registeredUser = await User.register(user, 'khutso001');
    res.send(registeredUser);
 })
