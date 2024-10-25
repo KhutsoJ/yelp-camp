@@ -45,7 +45,7 @@ const store = MongoStore.create({
 
 store.on("error",function(e) {
    console.log("SESSION STORE ERROR.", e);
-} )
+})
 
 const sessionConfig = {
    store: store,
@@ -76,25 +76,26 @@ mongoose.connect(dbUrl)
       console.log("ERROR:" + err.message);
    })
 
-const scriptSrcUrls = [
-   "https://stackpath.bootstrapcdn.com/",
-   "https://kit.fontawesome.com/",
-   "https://cdnjs.cloudflare.com/",
-   "https://cdn.jsdelivr.net",
-   "https://cdn.maptiler.com/",
-];
-const styleSrcUrls = [
-   "https://kit-free.fontawesome.com/",
-   "https://stackpath.bootstrapcdn.com/",
-   "https://fonts.googleapis.com/",
-   "https://use.fontawesome.com/",
-   "https://cdn.jsdelivr.net",
-   "https://cdn.maptiler.com/",
-];
-const connectSrcUrls = [
-   "https://api.maptiler.com/",
-];
+   const scriptSrcUrls = [
+      "https://stackpath.bootstrapcdn.com/",
+      "https://kit.fontawesome.com/",
+      "https://cdnjs.cloudflare.com/",
+      "https://cdn.jsdelivr.net",
+      "https://cdn.maptiler.com/", // add this
+  ];
+  const styleSrcUrls = [
+      "https://kit-free.fontawesome.com/",
+      "https://stackpath.bootstrapcdn.com/",
+      "https://fonts.googleapis.com/",
+      "https://use.fontawesome.com/",
+      "https://cdn.jsdelivr.net",
+      "https://cdn.maptiler.com/", // add this
+  ];
+  const connectSrcUrls = [
+      "https://api.maptiler.com/", // add this
+  ];
 const fontSrcUrls = [];
+
 app.use(
    helmet.contentSecurityPolicy({
       directives: {
@@ -106,10 +107,11 @@ app.use(
          objectSrc: [],
          imgSrc: [
             "'self'",
-            "blob",
-            "data",
+            "blob:",
+            "data:",
             "https://res.cloudinary.com/dzwnndfye/",
             "https://images.unsplash.com/",
+            "https://api.maptiler.com/",
          ],
          fontSrc: ["'self'", ...fontSrcUrls],
       },
