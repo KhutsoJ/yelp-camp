@@ -31,14 +31,15 @@ app.use(flash());
 app.use(mongoSanitize());
 app.use(helmet());
 const User = require('./models/user');
-const dbUrl = 'mongodb://127.0.0.1:27017/yelpCamp';
+const dbUrl = process.env.DB_URL || 'mongodb://127.0.0.1:27017/yelpCamp';
+const secret = process.env.SECRET || 'thisshouldbeanactualsecret';
 
 const store = MongoStore.create({
    mongoUrl: dbUrl,
    //DONT CONTINUOUSLY UPDATE IF DATA HAS NOT CHANGED (24H)
    touchAfter: 24 * 60 * 60,
    crypto: {
-      secret: 'thisshouldbeanactualsecret'
+      secret: secret
    }
 })
 
@@ -49,7 +50,7 @@ store.on("error",function(e) {
 const sessionConfig = {
    store: store,
    name: 'session',
-   secret: 'thisshouldbeanactualsecret',
+   secret: secret,
    resave: false,
    saveUninitialized: true,
    cookie: {
@@ -115,9 +116,10 @@ app.use(
    })
 )
 
-
-app.listen(3000, () => {
-   console.log("LISTENING ON PORT 3000");
+//PORT GIVEN BY SERVER
+const port = process.env.PORT || 3000;
+app.listen(port, () => {
+   console.log(`LISTENING ON PORT ${port}`);
 })
 
 
