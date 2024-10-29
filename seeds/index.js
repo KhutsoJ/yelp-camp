@@ -2,19 +2,26 @@
 // USEFUL TO JUST POPULATE DATABASE WITH DATA
 
 
-//GET RANDOM IMAGES:
-//https://api.unsplash.com/photos/random?client_id=IB-pf-kAqn_b4WVQmlgcAYPTkWLvHrOEmldEcW3wqMs&query=in-the-woods&count=1
 //KEY:
 //IB-pf-kAqn_b4WVQmlgcAYPTkWLvHrOEmldEcW3wqMs
+
+
+//RANDOM PHOTOS FROM QUERY: https://api.unsplash.com/photos/random?client_id=IB-pf-kAqn_b4WVQmlgcAYPTkWLvHrOEmldEcW3wqMs&query=in-the-woods&count=2&orientation=squarish
+//RANDOM PHOTOS FROM COLLECTION: https://api.unsplash.com/photos/random?client_id=IB-pf-kAqn_b4WVQmlgcAYPTkWLvHrOEmldEcW3wqMs&query=cabin&count=2&orientation=squarish
+
+if (process.env.NODE_ENV !== "production") {
+   require('dotenv').config();
+}
+const dbUrl = process.env.DB_URL || 'mongodb://127.0.0.1:27017/yelpCamp';
+
 
 const mongoose = require('mongoose');
 const Campground = require('../models/campground');
 const cities = require('./cities');
 const seedHelper = require('./seedHelper');
 const axios = require('axios');
-const maptilerClient = require('@maptiler/client');
 
-mongoose.connect('mongodb://127.0.0.1:27017/yelpCamp')
+mongoose.connect(dbUrl)
    .then(() => {
       console.log("Connected");
    })
@@ -30,7 +37,7 @@ const seedDB = async () => {
    const descriptors = seedHelper.descriptors;
    const citiesList = cities;
 
-   for (let i = 0; i < 50; i++) {
+   for (let i = 0; i < 25; i++) {
       //CREATE A RANDOM CAMP NAME
       const place = sample(places).sample;
       const descriptor = sample(descriptors).sample;
@@ -43,14 +50,14 @@ const seedDB = async () => {
       const longitude = citiesList[locationIndex].longitude;
       const latitude = citiesList[locationIndex].latitude;
       //RANDOM IMAGE
-      const imageData = await axios.get('https://api.unsplash.com/photos/random?client_id=IB-pf-kAqn_b4WVQmlgcAYPTkWLvHrOEmldEcW3wqMs&query=in-the-woods&count=2&orientation=squarish');
+      const imageData = await axios.get('https://api.unsplash.com/photos/random?client_id=IB-pf-kAqn_b4WVQmlgcAYPTkWLvHrOEmldEcW3wqMs&query=cabin&count=2&orientation=squarish');
       let images = [];
       for (d of imageData.data) {
-         images.push({ url: d.urls.regular, filename: d.user.id });
+         images.push({ url: d.urls.small, filename: d.user.id });
       }
       //CREATE CAMPGROUND AND SAVE DATABASE
       const campground = new Campground({
-         author: '670abccecac6adfc4dfc8bba',
+         author: '6720b6ef1a3aa2de6abd32fa',
          name: name,
          geometry: {
             type: 'Point',
@@ -73,7 +80,7 @@ seedDB().then(() => {
    mongoose.connection.close().then(() => console.log("Database closed"));
 })
 
-//RETURN RANDOM ELEMENT/SAMPLE IN ARRAY (name, city, etc)
+//RETURN RANDOM ELEMENT/SAMPLE AS WELL AS THE INDEX IN ARRAY (name, city, etc)
 const sample = (array) => {
    const randomIndex = Math.floor(Math.random() * array.length);
    return {
