@@ -31,8 +31,14 @@ app.use(flash());
 app.use(mongoSanitize());
 app.use(helmet());
 const User = require('./models/user');
+// const dbUrl = 'mongodb+srv://khutsoJ:2ONQ33rhDGBmRTE4@cluster0.xs7px.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0';
+// const secret = '5ea8e19fbc34b9728c9a820186b9380e'
 const dbUrl = process.env.DB_URL || 'mongodb://127.0.0.1:27017/yelpCamp';
 const secret = process.env.SECRET || 'thisshouldbeanactualsecret';
+console.log(`database: ${dbUrl}`)
+console.log(`Secret: ${secret}`)
+
+console.log(dbUrl)
 
 const store = MongoStore.create({
    mongoUrl: dbUrl,
@@ -43,7 +49,8 @@ const store = MongoStore.create({
    }
 })
 
-store.on("error",function(e) {
+
+store.on("error", function (e) {
    console.log("SESSION STORE ERROR.", e);
 })
 
@@ -76,24 +83,24 @@ mongoose.connect(dbUrl)
       console.log("ERROR:" + err.message);
    })
 
-   const scriptSrcUrls = [
-      "https://stackpath.bootstrapcdn.com/",
-      "https://kit.fontawesome.com/",
-      "https://cdnjs.cloudflare.com/",
-      "https://cdn.jsdelivr.net",
-      "https://cdn.maptiler.com/", // add this
-  ];
-  const styleSrcUrls = [
-      "https://kit-free.fontawesome.com/",
-      "https://stackpath.bootstrapcdn.com/",
-      "https://fonts.googleapis.com/",
-      "https://use.fontawesome.com/",
-      "https://cdn.jsdelivr.net",
-      "https://cdn.maptiler.com/", // add this
-  ];
-  const connectSrcUrls = [
-      "https://api.maptiler.com/", // add this
-  ];
+const scriptSrcUrls = [
+   "https://stackpath.bootstrapcdn.com/",
+   "https://kit.fontawesome.com/",
+   "https://cdnjs.cloudflare.com/",
+   "https://cdn.jsdelivr.net",
+   "https://cdn.maptiler.com/", // add this
+];
+const styleSrcUrls = [
+   "https://kit-free.fontawesome.com/",
+   "https://stackpath.bootstrapcdn.com/",
+   "https://fonts.googleapis.com/",
+   "https://use.fontawesome.com/",
+   "https://cdn.jsdelivr.net",
+   "https://cdn.maptiler.com/", // add this
+];
+const connectSrcUrls = [
+   "https://api.maptiler.com/", // add this
+];
 const fontSrcUrls = [];
 
 app.use(
@@ -124,7 +131,6 @@ app.listen(port, () => {
    console.log(`LISTENING ON PORT ${port}`);
 })
 
-
 app.use((req, res, next) => {
    res.locals.user = req.user;
    res.locals.success = req.flash('success');
@@ -135,6 +141,7 @@ app.use((req, res, next) => {
 app.get('/fakeUser', async (req, res) => {
    const user = new User({ email: 'joy@gmail.com', username: 'khutsojoy' });
    const registeredUser = await User.register(user, 'khutso001');
+   console.log(registeredUser)
    res.send(registeredUser);
 })
 

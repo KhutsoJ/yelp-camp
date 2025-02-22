@@ -57,7 +57,7 @@ const seedDB = async () => {
       }
       //CREATE CAMPGROUND AND SAVE DATABASE
       const campground = new Campground({
-         author: '6720b6ef1a3aa2de6abd32fa',
+         author: '67b9bc9d0b278cf8781ba7a8',
          name: name,
          geometry: {
             type: 'Point',
